@@ -1,0 +1,1014 @@
+{{ header }}{{ column_left }}
+<div id="content" class="cookiepolicy-module js-editor">
+  <div class="container-fluid">
+    <div class="content-head">
+        <h1>{{ text_title }}</h1>
+        <ul class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <div class="pull-right">
+            <button type="submit" form="form-cookiepolicy" class="btn btn-primary js-save">{{ button_apply }}</button>
+            <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">{{ button_close }}</a>
+        </div>
+    </div> <!-- /.content-head -->
+
+      {% if error_warning %}
+      <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+      {% endif %}
+      {% if success %}
+      <div class="alert alert-success alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ success }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+      {% endif %} <!-- /.messages -->
+
+    <div class="content-body">
+        <div class="panel panel-default panel-body cp-main-panel">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+
+          <div class="tab-navigation" style="position:relative">
+            <ul class="nav nav-tabs cookiepolicy-nav-base" id="main-tabs">
+                <li class=""><a href="#tab_core_settings" data-toggle="tab" aria-expanded="false">{{ tab_core_settings }}</a></li>
+                <li class="active"><a href="#tab_text_settings" data-toggle="tab" aria-expanded="true">{{ tab_text_settings }}</a></li>
+                <li class=""><a href="#tab_view_settings" data-toggle="tab" aria-expanded="false">{{ tab_view_settings }}</a></li>
+            </ul>
+          </div>
+
+        <div class="tab-content">
+            <div class="tab-pane fade" id="tab_core_settings">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 form-label">{{ entry_status }}</label>
+                        <div class="col-sm-10">
+                            <div class="btn-group btn-radio">
+                                <input type="radio" name="module_cookiepolicy_status" id="module_cookiepolicy_status_1" value="1" hidden {{ module_cookiepolicy_status ? 'checked' : '' }}>
+                                <label for="module_cookiepolicy_status_1" class="btn btn-default btn-active-success">{{ text_enabled }}</label>
+                                <input type="radio" name="module_cookiepolicy_status" id="module_cookiepolicy_status_0" value="0" hidden {{ module_cookiepolicy_status ? '' : 'checked' }}>
+                                <label for="module_cookiepolicy_status_0" class="btn btn-default btn-active-danger">{{ text_disabled }}</label>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-cookie-expires"><span data-toggle="tooltip" title="{{ help_cookie_expires }}">{{ entry_cookie_expires }}</span></label>
+                      <div class="col-sm-10">
+                        <input type="text" name="module_cookiepolicy_cookie_expires" value="{{ module_cookiepolicy_cookie_expires }}" placeholder="{{ text_cookie_expires }}" id="input-cookie-expires" class="form-control" />
+                        <small class="form-text text-muted"> {{ help_cookie_expires }}</small>
+                      </div>
+                </div>
+                <!--<div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-cookie-name"><span data-toggle="tooltip" title="{{ help_cookie_name }}">{{ entry_cookie_name }}</span></label>
+                      <div class="col-sm-10">
+                        <input type="text" name="module_cookiepolicy_cookie_name" value="{{ module_cookiepolicy_cookie_name }}" placeholder="{{ text_cookie_name }}" id="input-cookie-name" class="form-control" />
+                        <small class="form-text text-muted"> {{ help_cookie_name }}</small>
+                      </div>
+                </div>-->
+            </div>
+            </div><!-- /.tab_core_settings --> 
+
+            <div class="tab-pane fade active in" id="tab_text_settings">
+            <div class="form-group">
+                <label class="col-sm-2 col-form-label"><span data-toggle="tooltip" title="{{ help_cookietext }}">{{ entry_cookietext }}</span></label>
+                <div class="col-sm-10">
+				<small class="form-text text-muted"> {{ help_cookietext }}</small>
+                    {% for language in languages %}
+                    <div class="input-group"><span class="input-group-addon">
+                        <img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"  alt=""/></span>
+                    <input name="module_cookiepolicy_cookietext[text][{{ language.code }}]" value="{{ attribute(module_cookiepolicy_cookietext.text, language.code) }}" placeholder="{{ text_cookietext }}" id="cookietext_{{ language.code }}" class="form-control" />
+                    </div>
+                   {% endfor %}
+                </div>
+            </div> 
+
+            <div class="form-group">
+                <div class="js-toggle">
+                    <div class="radio form-group form-group-radio">
+                            <label class="col-sm-2 form-label label-radio">
+                            <input type="radio" class="col-form-label" name="module_cookiepolicy_infopage_on" value="1" {{ module_cookiepolicy_infopage_on ? 'checked' : 'checked' }}>
+                            {{ entry_infopage }}
+                            </label>
+                            <div class="js-toggle-target col-sm-10" {{ not module_cookiepolicy_infopage_on ? 'style="display:none"' : '' }}>
+                                <select name="module_cookiepolicy_infopage" id="input-cookiepolicy-infopage" class="form-control">
+                                <option value="0">{{ text_none }}</option>
+                                {% for information in informations %}
+                                {% if information.information_id == module_cookiepolicy_infopage %}
+                                <option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+                                {% else %}
+                                <option value="{{ information.information_id }}">{{ information.title }}</option>
+                                {% endif %}
+                                {% endfor %}
+                                </select>
+                                <small class="form-text text-muted"> {{ help_infopage }}</small><br />
+                                <small class="form-text text-muted"> {{ help_or_random }}</small>
+                            </div>
+                    </div>
+                    <div class="radio form-group form-group-radio">
+                            <label class="col-sm-2 form-label label-radio">
+                            <input type="radio" name="module_cookiepolicy_infopage_on" value="0" {{ not module_cookiepolicy_infopage_on ? 'checked' : '' }}>
+                            {{ entry_url }}
+                            </label>
+                            <div class="js-toggle-target col-sm-10" {{ module_cookiepolicy_infopage_on ? 'style="display:none"' : '' }}>
+                                <small class="form-text text-muted"> {{ help_random_url }}</small>
+                                <div class="input-group"><span class="input-group-addon">&nbsp<i class="fa fa-link" aria-hidden="true"></i></span>
+                                <input name="module_cookiepolicy_url" value="{{ module_cookiepolicy_url }}" placeholder="{{ text_url }}" class="form-control"></input>
+                                </div>
+                                <small class="form-text text-muted"> {{ help_random_url_text }}</small>
+                                {% for language in languages %}
+                                <div class="input-group"><span class="input-group-addon">
+                                <img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"  alt=""/></span>
+                                <input name="module_cookiepolicy_urltext[text][{{ language.code }}]" value="{{ attribute(module_cookiepolicy_urltext.text, language.code) }}" placeholder="{{ text_urltext }}" id="urltext_{{ language.code }}" class="form-control" />
+                                </div>
+                                {% endfor %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 form-label">{{ entry_blank_page }}</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group btn-radio">
+                            <input type="radio" name="module_cookiepolicy_blank_page" id="module_cookiepolicy_blank_page_blank" value="_blank" hidden {% if module_cookiepolicy_blank_page == '_blank' %}checked{% endif %}>
+                            <label for="module_cookiepolicy_blank_page_blank" class="btn btn-default btn-active-success">{{ text_yes }}</label>
+                            <input type="radio" name="module_cookiepolicy_blank_page" id="module_cookiepolicy_blank_page_self" value="_self" hidden {% if module_cookiepolicy_blank_page == '_self' %}checked{% endif %}>
+                            <label for="module_cookiepolicy_blank_page_self" class="btn btn-default btn-active-danger">{{ text_no }}</label>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 form-label"><span data-toggle="tooltip" title="{{ help_cookietext_after }}">{{ entry_cookietext_after }}</span></label>
+                <div class="col-sm-10">
+                <small class="form-text text-muted"> {{ help_cookietext_after }}</small>
+                {% for language in languages %}
+                    <div class="input-group"><span class="input-group-addon">
+                    <img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"  alt=""/></span>
+                    <input name="module_cookiepolicy_cookietext_after[text][{{ language.code }}]" value="{{ attribute(module_cookiepolicy_cookietext_after.text, language.code) }}" placeholder="{{ text_cookietext_after }}" id="cookietext_after_{{ language.code }}" class="form-control" />
+                    </div>
+                {% endfor %}
+                </div>
+            </div> 
+
+            <div class="form-group">
+                <label class="col-sm-2 form-label"><span data-toggle="tooltip" title="{{ help_buttontext }}">{{ entry_buttontext }}</span></label>
+                <div class="col-sm-10">
+                <small class="form-text text-muted"> {{ help_buttontext }}</small>
+                {% for language in languages %}
+                    <div class="input-group"><span class="input-group-addon">
+                    <img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"  alt=""/></span>
+                    <label for="buttontext_{{ language.code }}"></label><input name="module_cookiepolicy_buttontext[text][{{ language.code }}]" value="{{ attribute(module_cookiepolicy_buttontext.text, language.code) }}" placeholder="{{ text_buttontext }}" id="buttontext_{{ language.code }}" class="form-control" />
+                    </div>
+                {% endfor %}
+                </div>
+            </div> 
+
+            </div>
+
+            <div class="tab-pane fade" id="tab_view_settings">
+              <div class="form-group">
+                <label class="col-sm-2 form-label" for="cookie-position">{{ entry_position }}</label>
+                  <div class="col-sm-10">    
+                    <select name="module_cookiepolicy_position" id="cookie-position" class="form-control">
+                    {% if module_cookiepolicy_position == "bottom" %} 
+                    <option value="bottom" selected="selected">{{ text_bottom }}</option>
+                    <option value="top">{{ text_top }}</option>
+                    {% elseif module_cookiepolicy_position == "top" %}
+                    <option value="bottom">{{ text_bottom }}</option>
+                    <option value="top" selected="selected">{{ text_top }}</option>
+                    {% else %}
+                    <option value="bottom" selected="selected">{{ text_bottom }}</option>
+                    <option value="top">{{ text_top }}</option>
+                    {% endif %}
+                    </select>
+                 </div>
+             </div>
+
+            <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ text_text_view }}</span></h3>
+                </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-text-colour"><span data-toggle="tooltip" title="{{ help_text_colour }}">{{ entry_text_colour }}</span></label>
+                    <div class="col-sm-10">
+                        <input type="text" name="module_cookiepolicy_text_colour" value="{{ module_cookiepolicy_text_colour }}" id="input-text-colour" class="jscolor {required:false,hash:true} form-control" />
+                        <small class="form-text text-muted"> {{ help_text_colour }}</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-link-colour"><span data-toggle="tooltip" title="{{ help_link_colour }}">{{ entry_link_colour }}</span></label>
+                        <div class="col-sm-2">
+                            <input type="text" name="module_cookiepolicy_link_colour" value="{{ module_cookiepolicy_link_colour }}" id="input-link-colour" class="jscolor {required:false,hash:true} form-control"  />
+                            <small class="form-text text-muted"> {{ help_link_colour }}</small>
+                        </div>
+                    <label class="col-sm-2 form-label" for="input-link-hover"><span data-toggle="tooltip" title="{{ help_link_hover }}">{{ entry_link_hover }}</span></label>
+                        <div class="col-sm-2">
+                            <input type="text" name="module_cookiepolicy_link_hover" value="{{ module_cookiepolicy_link_hover }}" id="input-link-hover" class="jscolor {required:false,hash:true} form-control" />
+                            <small class="form-text text-muted"> {{ help_link_hover }}</small>
+                        </div>
+                </div>
+
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label" for="text-align"><span data-toggle="tooltip" title="{{ help_text_align }}">{{ entry_text_align }}</span></label>
+                    <div class="col-sm-10">    
+                      <select name="module_cookiepolicy_text_align" id="text-align" class="form-control">
+                        {% if module_cookiepolicy_text_align == "left" %}
+                        <option value="left" selected="selected">{{ text_text_left }}</option>
+                        <option value="center">{{ text_text_center }}</option>
+                        <option value="right">{{ text_text_right }}</option>
+                        {% elseif module_cookiepolicy_text_align == "center" %}
+                        <option value="left">{{ text_text_left }}</option>
+                        <option value="center" selected="selected">{{ text_text_center }}</option>
+                        <option value="right">{{ text_text_right }}</option>
+                        {% elseif module_cookiepolicy_text_align == "right" %}
+                        <option value="left">{{ text_text_left }}</option>
+                        <option value="center">{{ text_text_center }}</option>
+                        <option value="right" selected="selected">{{ text_text_right }}</option>
+                        {% else %}
+                        <option value="left" selected="selected">{{ text_text_left }}</option>
+                        <option value="center">{{ text_text_center }}</option>
+                        <option value="right">{{ text_text_right }}</option>
+                        {% endif %}
+                     </select>
+                     <small class="form-text text-muted"> {{ help_text_align }}</small>
+                   </div>
+              </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ text_background_view }}</span></h3>
+                </div>
+            <div class="panel-body">
+                <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="input-background-colour"><span data-toggle="tooltip" title="{{ help_background_colour }}">{{ entry_background_colour }}</span></label>
+                <div class="col-sm-10">
+                <input type="text" name="module_cookiepolicy_background_colour" value="{{ module_cookiepolicy_background_colour }}" id="input-background-colour" class="jscolor {required:false,hash:true} form-control" />
+                <small class="form-text text-muted"> {{ help_background_colour }}</small>
+                </div>
+                </div>
+                <div class="form-group row">
+
+                <label class="col-sm-2 col-form-label" for="cookie_opacity"><span data-toggle="tooltip" title="{{ help_opacity }}">{{ entry_opacity }}</span></label>
+                <div class="col-sm-10">
+                <select name="module_cookiepolicy_opacity" id="cookie_opacity" class="form-control">
+                {% set opacity = { "0.1" : "0.1", "0.2" : "0.2", "0.3" : "0.3", "0.4" : "0.4", "0.5" : "0.5", "0.6" : "0.6", "0.7" : "0.7", "0.8" : "0.8", "0.9" : "0.9", "1" : "1" } %}
+
+                {% for key,name in opacity %} 
+                    <option value="{{ key }}" {{ module_cookiepolicy_opacity is defined and module_cookiepolicy_opacity == key ? 'selected="selected"' : '' }}>{{ name }}</option>
+                {% endfor %} 
+                </select>
+				<small class="form-text text-muted"> {{ help_opacity }}</small>
+                </div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span data-toggle="tooltip" title="{{ help_accept_button }}">{{ text_accept_button_view }}</span></h3>
+                </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-accept-text-colour"><span data-toggle="tooltip" title="{{ help_accept_text_colour }}">{{ entry_accept_text_colour }}</span></label>
+                        <div class="col-sm-2">
+                            <input type="text" name="module_cookiepolicy_accept_text_colour" value="{{ module_cookiepolicy_accept_text_colour }}" id="input-accept-text-colour" class="jscolor {required:false,hash:true} form-control"  />
+                            <small class="form-text text-muted"> {{ help_accept_text_colour }}</small>
+                        </div>
+                    <label class="col-sm-2 form-label" for="input-accept-text-hover"><span data-toggle="tooltip" title="{{ help_accept_text_hover }}">{{ entry_accept_text_hover }}</span></label>
+                        <div class="col-sm-2">
+                            <input type="text" name="module_cookiepolicy_accept_text_hover" value="{{ module_cookiepolicy_accept_text_hover }}" id="input-accept-text-hover" class="jscolor {required:false,hash:true} form-control" />
+                            <small class="form-text text-muted"> {{ help_accept_text_hover }}</small>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-accept-button-colour"><span data-toggle="tooltip" title="{{ help_accept_button_colour }}">{{ entry_accept_button_colour }}</span></label>
+                        <div class="col-sm-2">
+                        <input type="text" name="module_cookiepolicy_accept_button_colour" value="{{ module_cookiepolicy_accept_button_colour }}" id="input-accept-button-colour" class="jscolor {required:false,hash:true} form-control" />
+                        <small class="form-text text-muted"> {{ help_accept_button_colour }}</small>
+                        </div>
+                    <label class="col-sm-2 form-label" for="input-accept-button-hover"><span data-toggle="tooltip" title="{{ help_accept_button_hover }}">{{ entry_accept_button_hover }}</span></label>
+                        <div class="col-sm-2">
+                        <input type="text" name="module_cookiepolicy_accept_button_hover" value="{{ module_cookiepolicy_accept_button_hover }}" id="input-accept-button-hover" class="jscolor {required:false,hash:true} form-control" />
+                        <small class="form-text text-muted"> {{ help_accept_button_hover }}</small>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 form-label">{{ entry_transparent_button }}</label>
+                        <div class="col-sm-2">
+                            <div class="btn-group btn-radio">
+                                <input type="radio" name="module_cookiepolicy_transparent_button" id="module_cookiepolicy_transparent_button_1" value="1" hidden {{ module_cookiepolicy_transparent_button ? 'checked' : '' }}>
+                                <label for="module_cookiepolicy_transparent_button_1" class="btn btn-default btn-active-success">{{ text_yes }}</label>
+                                <input type="radio" name="module_cookiepolicy_transparent_button" id="module_cookiepolicy_transparent_button_0" value="0" hidden {{ module_cookiepolicy_transparent_button ? '' : 'checked' }}>
+                                <label for="module_cookiepolicy_transparent_button_0" class="btn btn-default btn-active-danger">{{ text_no }}</label>
+                            </div>
+                        </div>
+                    <label class="col-sm-2 form-label">{{ entry_rounded_corners }}</label>
+                        <div class="col-sm-2">
+                            <div class="btn-group btn-radio">
+                                <input type="radio" name="module_cookiepolicy_rounded_corners" id="module_cookiepolicy_rounded_corners_1" value="1" hidden {{ module_cookiepolicy_rounded_corners ? 'checked' : '' }}>
+                                <label for="module_cookiepolicy_rounded_corners_1" class="btn btn-default btn-active-success">{{ text_yes }}</label>
+                                <input type="radio" name="module_cookiepolicy_rounded_corners" id="module_cookiepolicy_rounded_corners_0" value="0" hidden {{ module_cookiepolicy_rounded_corners ? '' : 'checked' }}>
+                                <label for="module_cookiepolicy_rounded_corners_0" class="btn btn-default btn-active-danger">{{ text_no }}</label>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 form-label" for="input-accept-button-border">{{ entry_accept_button_border }}</label>
+                    	<div class="col-sm-2">
+                        	<input type="text" name="module_cookiepolicy_accept_button_border" value="{{ module_cookiepolicy_accept_button_border }}" id="input-accept-button-border" class="jscolor {required:false,hash:true} form-control" />
+			    		    <small class="form-text text-muted"> {{ help_accept_button_border }}</small>
+                    	</div>
+                    <label class="col-sm-2 form-label" for="input-accept-button-border-hover">{{ entry_accept_button_border_hover }}</label>
+                	    <div class="col-sm-2">
+                	        <input type="text" name="module_cookiepolicy_accept_button_border_hover" value="{{ module_cookiepolicy_accept_button_border_hover }}" id="input-accept-button-border_hover" class="jscolor {required:false,hash:true} form-control" />
+                            <small class="form-text text-muted"> {{ help_accept_button_border_hover }}</small>
+                        </div>
+                </div>
+            </div>
+            <div class="form-group">
+            <label class="col-sm-2 form-label">{{ entry_accept_button_icon }}</label>
+                <div class="col-sm-10">
+                    <span class="icon_open" id="input-accept-button-icon" onclick="icon_fontawesome_popup($(this).attr('id'))">
+                    {{ text_select_icon }}
+                    {% if (module_cookiepolicy_accept_button_icon is defined) %}<i class="{{ module_cookiepolicy_accept_button_icon }}"></i>{% endif %}</span>
+                    <input class="form-control" type="hidden"  name="module_cookiepolicy_accept_button_icon" value="{{ module_cookiepolicy_accept_button_icon is defined ? module_cookiepolicy_accept_button_icon : '' }}"/>
+                </div>
+            </div>				
+
+            </div>
+
+          </div>
+                      </div>
+
+                      </div>
+              </form>
+                    </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="view/javascript/cookiepolicy/jscolor/jscolor.js"></script>
+    <script src="view/javascript/cookiepolicy/cookiepolicy_popup.js"></script>
+    <link href="view/javascript/cookiepolicy/cookiepolicy.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="view/javascript/cookiepolicy/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <script>
+    function icon_fontawesome_popup(id) {
+        $('.icon_fontawesome_popup').popup('show');
+        $('.id_icon').val(id);
+        
+        $('.icon_fontawesome_popup .fa').on('click', function() {
+            var class_this_icon = $(this).attr('class');
+            $('.class_icon').val(class_this_icon);
+            save_icons_fontawesome();
+            $('.icon_fontawesome_popup').popup('hide');
+        });
+        $('.icon_fontawesome_popup .empty-icon').on('click', function() {
+            $('.class_icon').val('');
+            save_icons_fontawesome();
+            $('.icon_fontawesome_popup').popup('hide');
+        });
+    }
+    
+    function save_icons_fontawesome() {
+        var id_icon = $('.id_icon').val();
+        var class_this_icon = $('.class_icon').val();
+        $('#'+id_icon).html('{{ text_select_icon }} <i class="' + class_this_icon + '"></i>');
+        $('#'+id_icon).next().val(class_this_icon);
+    }
+    </script>
+<input type="hidden" class="id_icon" name="target" value="" />
+<input type="hidden" class="class_icon" name="class" value="" />
+<div class="icon_fontawesome_popup">
+        <div class="row">
+          <div class="col-sm-5">
+            <button class="empty-icon btn btn-danger">{{ text_delete_icon }}</button>
+          </div>
+          <div class="col-sm-7">
+            <div class="input-group">
+             <input id="iconsFilter" type="text" class="form-control" placeholder="{{ text_filter_icon }}" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="row" id="faIcons">
+<div class="col-xs-1"><i class="fa fa-glass"></i><span class="hidden">glass</span></div>
+<div class="col-xs-1"><i class="fa fa-music"></i><span class="hidden">music</span></div>
+<div class="col-xs-1"><i class="fa fa-search"></i><span class="hidden">search</span></div>
+<div class="col-xs-1"><i class="fa fa-envelope-o"></i><span class="hidden">envelope</span></div>
+<div class="col-xs-1"><i class="fa fa-heart"></i><span class="hidden">heart</span></div>
+<div class="col-xs-1"><i class="fa fa-star"></i><span class="hidden">star</span></div>
+<div class="col-xs-1"><i class="fa fa-star-o"></i><span class="hidden">star</span></div>
+<div class="col-xs-1"><i class="fa fa-user"></i><span class="hidden">user</span></div>
+<div class="col-xs-1"><i class="fa fa-film"></i><span class="hidden">film</span></div>
+<div class="col-xs-1"><i class="fa fa-th-large"></i><span class="hidden">th</span></div>
+<div class="col-xs-1"><i class="fa fa-th"></i><span class="hidden">th</span></div>
+<div class="col-xs-1"><i class="fa fa-th-list"></i><span class="hidden">th</span></div>
+<div class="col-xs-1"><i class="fa fa-check"></i><span class="hidden">check</span></div>
+<div class="col-xs-1"><i class="fa fa-times"></i><span class="hidden">times close delete</span></div>
+<div class="col-xs-1"><i class="fa fa-search-plus"></i><span class="hidden">search</span></div>
+<div class="col-xs-1"><i class="fa fa-search-minus"></i><span class="hidden">search</span></div>
+<div class="col-xs-1"><i class="fa fa-power-off"></i><span class="hidden">power</span></div>
+<div class="col-xs-1"><i class="fa fa-signal"></i><span class="hidden">signal</span></div>
+<div class="col-xs-1"><i class="fa fa-cog"></i><span class="hidden">cog</span></div>
+<div class="col-xs-1"><i class="fa fa-trash-o"></i><span class="hidden">trash</span></div>
+<div class="col-xs-1"><i class="fa fa-home"></i><span class="hidden">home</span></div>
+<div class="col-xs-1"><i class="fa fa-file-o"></i><span class="hidden">file</span></div>
+<div class="col-xs-1"><i class="fa fa-clock-o"></i><span class="hidden">clock</span></div>
+<div class="col-xs-1"><i class="fa fa-road"></i><span class="hidden">road</span></div>
+<div class="col-xs-1"><i class="fa fa-download"></i><span class="hidden">download</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-o-down"></i><span class="hidden">arrow</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-o-up"></i><span class="hidden">arrow</span></div>
+<div class="col-xs-1"><i class="fa fa-inbox"></i><span class="hidden">inbox</span></div>
+<div class="col-xs-1"><i class="fa fa-play-circle-o"></i><span class="hidden">play</span></div>
+<div class="col-xs-1"><i class="fa fa-repeat"></i><span class="hidden">repeat</span></div>
+<div class="col-xs-1"><i class="fa fa-refresh"></i><span class="hidden">refresh</span></div>
+<div class="col-xs-1"><i class="fa fa-list-alt"></i><span class="hidden">list</span></div>
+<div class="col-xs-1"><i class="fa fa-lock"></i><span class="hidden">lock</span></div>
+<div class="col-xs-1"><i class="fa fa-flag"></i><span class="hidden">flag</span></div>
+<div class="col-xs-1"><i class="fa fa-headphones"></i><span class="hidden">headphones</span></div>
+<div class="col-xs-1"><i class="fa fa-volume-off"></i><span class="hidden">volume</span></div>
+<div class="col-xs-1"><i class="fa fa-volume-down"></i><span class="hidden">volume</span></div>
+<div class="col-xs-1"><i class="fa fa-volume-up"></i><span class="hidden">volume</span></div>
+<div class="col-xs-1"><i class="fa fa-qrcode"></i><span class="hidden">qrcode</span></div>
+<div class="col-xs-1"><i class="fa fa-barcode"></i><span class="hidden">barcode</span></div>
+<div class="col-xs-1"><i class="fa fa-tag"></i><span class="hidden">tag</span></div>
+<div class="col-xs-1"><i class="fa fa-tags"></i><span class="hidden">tag</span></div>
+<div class="col-xs-1"><i class="fa fa-book"></i><span class="hidden">book</span></div>
+<div class="col-xs-1"><i class="fa fa-bookmark"></i><span class="hidden">bookmark</span></div>
+<div class="col-xs-1"><i class="fa fa-print"></i><span class="hidden">print</span></div>
+<div class="col-xs-1"><i class="fa fa-camera"></i><span class="hidden">camera</span></div>
+<div class="col-xs-1"><i class="fa fa-font"></i><span class="hidden">font</span></div>
+<div class="col-xs-1"><i class="fa fa-bold"></i><span class="hidden">bold</span></div>
+<div class="col-xs-1"><i class="fa fa-italic"></i><span class="hidden">italic</span></div>
+<div class="col-xs-1"><i class="fa fa-text-height"></i><span class="hidden">text</span></div>
+<div class="col-xs-1"><i class="fa fa-text-width"></i><span class="hidden">text</span></div>
+<div class="col-xs-1"><i class="fa fa-align-left"></i><span class="hidden">align</span></div>
+<div class="col-xs-1"><i class="fa fa-align-center"></i><span class="hidden">align</span></div>
+<div class="col-xs-1"><i class="fa fa-align-right"></i><span class="hidden">align</span></div>
+<div class="col-xs-1"><i class="fa fa-align-justify"></i><span class="hidden">align</span></div>
+<div class="col-xs-1"><i class="fa fa-list"></i><span class="hidden">list</span></div>
+<div class="col-xs-1"><i class="fa fa-outdent"></i><span class="hidden">outdent</span></div>
+<div class="col-xs-1"><i class="fa fa-indent"></i><span class="hidden">indent</span></div>
+<div class="col-xs-1"><i class="fa fa-video-camera"></i><span class="hidden">video camera</span></div>
+<div class="col-xs-1"><i class="fa fa-picture-o"></i><span class="hidden">picture</span></div>
+<div class="col-xs-1"><i class="fa fa-pencil"></i><span class="hidden">pencil</span></div>
+<div class="col-xs-1"><i class="fa fa-map-marker"></i><span class="hidden">map marker</span></div>
+<div class="col-xs-1"><i class="fa fa-adjust"></i><span class="hidden">adjust</span></div>
+<div class="col-xs-1"><i class="fa fa-tint"></i><span class="hidden">tint</span></div>
+<div class="col-xs-1"><i class="fa fa-pencil-square-o"></i><span class="hidden">pencil</span></div>
+<div class="col-xs-1"><i class="fa fa-share-square-o"></i><span class="hidden">share</span></div>
+<div class="col-xs-1"><i class="fa fa-check-square-o"></i><span class="hidden">check</span></div>
+<div class="col-xs-1"><i class="fa fa-arrows"></i><span class="hidden">arrows</span></div>
+<div class="col-xs-1"><i class="fa fa-step-backward"></i><span class="hidden">step backward</span></div>
+<div class="col-xs-1"><i class="fa fa-fast-backward"></i><span class="hidden">fast backward</span></div>
+<div class="col-xs-1"><i class="fa fa-backward"></i><span class="hidden">backward</span></div>
+<div class="col-xs-1"><i class="fa fa-play"></i><span class="hidden">play</span></div>
+<div class="col-xs-1"><i class="fa fa-pause"></i><span class="hidden">pause</span></div>
+<div class="col-xs-1"><i class="fa fa-stop"></i><span class="hidden">stop</span></div>
+<div class="col-xs-1"><i class="fa fa-forward"></i><span class="hidden"></span></div>
+<div class="col-xs-1"><i class="fa fa-fast-forward"></i><span class="hidden">forward</span></div>
+<div class="col-xs-1"><i class="fa fa-step-forward"></i><span class="hidden">forward</span></div>
+<div class="col-xs-1"><i class="fa fa-eject"></i><span class="hidden">eject</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-left"></i><span class="hidden">chevron</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-right"></i><span class="hidden">chevron</span></div>
+<div class="col-xs-1"><i class="fa fa-plus-circle"></i><span class="hidden">plus circle</span></div>
+<div class="col-xs-1"><i class="fa fa-minus-circle"></i><span class="hidden">minus circle</span></div>
+<div class="col-xs-1"><i class="fa fa-times-circle"></i><span class="hidden">times circle</span></div>
+<div class="col-xs-1"><i class="fa fa-check-circle"></i><span class="hidden">check circle</span></div>
+<div class="col-xs-1"><i class="fa fa-question-circle"></i><span class="hidden">question circle</span></div>
+<div class="col-xs-1"><i class="fa fa-info-circle"></i><span class="hidden">info circle</span></div>
+<div class="col-xs-1"><i class="fa fa-crosshairs"></i><span class="hidden">crosshairs</span></div>
+<div class="col-xs-1"><i class="fa fa-times-circle-o"></i><span class="hidden">times circle</span></div>
+<div class="col-xs-1"><i class="fa fa-check-circle-o"></i><span class="hidden">check circle</span></div>
+<div class="col-xs-1"><i class="fa fa-ban"></i><span class="hidden">ban</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-left"></i><span class="hidden">arrow left</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-right"></i><span class="hidden">arrow right</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-up"></i><span class="hidden">arrow up</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-down"></i><span class="hidden">arrow down</span></div>
+<div class="col-xs-1"><i class="fa fa-share"></i><span class="hidden">share</span></div>
+<div class="col-xs-1"><i class="fa fa-expand"></i><span class="hidden">expand</span></div>
+<div class="col-xs-1"><i class="fa fa-compress"></i><span class="hidden">compress</span></div>
+<div class="col-xs-1"><i class="fa fa-plus"></i><span class="hidden">plus</span></div>
+<div class="col-xs-1"><i class="fa fa-minus"></i><span class="hidden">minus</span></div>
+<div class="col-xs-1"><i class="fa fa-asterisk"></i><span class="hidden">asterisk</span></div>
+<div class="col-xs-1"><i class="fa fa-exclamation-circle"></i><span class="hidden">exclamation circle</span></div>
+<div class="col-xs-1"><i class="fa fa-gift"></i><span class="hidden">gift</span></div>
+<div class="col-xs-1"><i class="fa fa-leaf"></i><span class="hidden">leaf</span></div>
+<div class="col-xs-1"><i class="fa fa-fire"></i><span class="hidden">fire</span></div>
+<div class="col-xs-1"><i class="fa fa-eye"></i><span class="hidden">eye</span></div>
+<div class="col-xs-1"><i class="fa fa-eye-slash"></i><span class="hidden">eye slash</span></div>
+<div class="col-xs-1"><i class="fa fa-exclamation-triangle"></i><span class="hidden">exclamation triangle</span></div>
+<div class="col-xs-1"><i class="fa fa-plane"></i><span class="hidden">plane</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar"></i><span class="hidden">calendar</span></div>
+<div class="col-xs-1"><i class="fa fa-random"></i><span class="hidden">random</span></div>
+<div class="col-xs-1"><i class="fa fa-comment"></i><span class="hidden">comment</span></div>
+<div class="col-xs-1"><i class="fa fa-magnet"></i><span class="hidden">magnet</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-up"></i><span class="hidden">chevron up</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-down"></i><span class="hidden">chevron down</span></div>
+<div class="col-xs-1"><i class="fa fa-retweet"></i><span class="hidden">retweet</span></div>
+<div class="col-xs-1"><i class="fa fa-shopping-cart"></i><span class="hidden">shopping cart</span></div>
+<div class="col-xs-1"><i class="fa fa-folder"></i><span class="hidden">folder</span></div>
+<div class="col-xs-1"><i class="fa fa-folder-open"></i><span class="hidden">folder open</span></div>
+<div class="col-xs-1"><i class="fa fa-arrows-v"></i><span class="hidden">arrows</span></div>
+<div class="col-xs-1"><i class="fa fa-arrows-h"></i><span class="hidden">arrows</span></div>
+<div class="col-xs-1"><i class="fa fa-bar-chart"></i><span class="hidden">bar chart</span></div>
+<div class="col-xs-1"><i class="fa fa-twitter-square"></i><span class="hidden">twitter square</span></div>
+<div class="col-xs-1"><i class="fa fa-facebook-square"></i><span class="hidden">facebook square</span></div>
+<div class="col-xs-1"><i class="fa fa-camera-retro"></i><span class="hidden">camera retro</span></div>
+<div class="col-xs-1"><i class="fa fa-key"></i><span class="hidden">key</span></div>
+<div class="col-xs-1"><i class="fa fa-cogs"></i><span class="hidden">cogs</span></div>
+<div class="col-xs-1"><i class="fa fa-comments"></i><span class="hidden">comments</span></div>
+<div class="col-xs-1"><i class="fa fa-thumbs-o-up"></i><span class="hidden">thumbs up</span></div>
+<div class="col-xs-1"><i class="fa fa-thumbs-o-down"></i><span class="hidden">thumbs down</span></div>
+<div class="col-xs-1"><i class="fa fa-star-half"></i><span class="hidden">star half</span></div>
+<div class="col-xs-1"><i class="fa fa-heart-o"></i><span class="hidden">heart</span></div>
+<div class="col-xs-1"><i class="fa fa-sign-out"></i><span class="hidden">sign out</span></div>
+<div class="col-xs-1"><i class="fa fa-linkedin-square"></i><span class="hidden">linkedin square</span></div>
+<div class="col-xs-1"><i class="fa fa-thumb-tack"></i><span class="hidden">thumb tack</span></div>
+<div class="col-xs-1"><i class="fa fa-external-link"></i><span class="hidden">external link</span></div>
+<div class="col-xs-1"><i class="fa fa-sign-in"></i><span class="hidden">sign in</span></div>
+<div class="col-xs-1"><i class="fa fa-trophy"></i><span class="hidden">trophy</span></div>
+<div class="col-xs-1"><i class="fa fa-github-square"></i><span class="hidden">github square</span></div>
+<div class="col-xs-1"><i class="fa fa-upload"></i><span class="hidden">upload</span></div>
+<div class="col-xs-1"><i class="fa fa-lemon-o"></i><span class="hidden">lemon</span></div>
+<div class="col-xs-1"><i class="fa fa-phone"></i><span class="hidden">phone</span></div>
+<div class="col-xs-1"><i class="fa fa-square-o"></i><span class="hidden">square</span></div>
+<div class="col-xs-1"><i class="fa fa-bookmark-o"></i><span class="hidden">bookmark</span></div>
+<div class="col-xs-1"><i class="fa fa-phone-square"></i><span class="hidden">phone square</span></div>
+<div class="col-xs-1"><i class="fa fa-twitter"></i><span class="hidden">twitter</span></div>
+<div class="col-xs-1"><i class="fa fa-facebook"></i><span class="hidden">facebook</span></div>
+<div class="col-xs-1"><i class="fa fa-github"></i><span class="hidden">github</span></div>
+<div class="col-xs-1"><i class="fa fa-unlock"></i><span class="hidden">unlock</span></div>
+<div class="col-xs-1"><i class="fa fa-credit-card"></i><span class="hidden">credit card</span></div>
+<div class="col-xs-1"><i class="fa fa-rss"></i><span class="hidden">rss</span></div>
+<div class="col-xs-1"><i class="fa fa-hdd-o"></i><span class="hidden">hdd</span></div>
+<div class="col-xs-1"><i class="fa fa-bullhorn"></i><span class="hidden">bullhorn</span></div>
+<div class="col-xs-1"><i class="fa fa-bell"></i><span class="hidden">bell</span></div>
+<div class="col-xs-1"><i class="fa fa-certificate"></i><span class="hidden">certificate</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-o-right"></i><span class="hidden">hand right</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-o-left"></i><span class="hidden">hand left</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-o-up"></i><span class="hidden">hand up</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-o-down"></i><span class="hidden">hand down</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-left"></i><span class="hidden">arrow circle left</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-right"></i><span class="hidden">arrow circle right</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-up"></i><span class="hidden">arrow circle up</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-down"></i><span class="hidden">arrow circle down</span></div>
+<div class="col-xs-1"><i class="fa fa-globe"></i><span class="hidden">globe</span></div>
+<div class="col-xs-1"><i class="fa fa-wrench"></i><span class="hidden">wrench</span></div>
+<div class="col-xs-1"><i class="fa fa-tasks"></i><span class="hidden">tasks</span></div>
+<div class="col-xs-1"><i class="fa fa-filter"></i><span class="hidden">filter</span></div>
+<div class="col-xs-1"><i class="fa fa-briefcase"></i><span class="hidden">briefcase</span></div>
+<div class="col-xs-1"><i class="fa fa-arrows-alt"></i><span class="hidden">arrows alt</span></div>
+<div class="col-xs-1"><i class="fa fa-users"></i><span class="hidden">users</span></div>
+<div class="col-xs-1"><i class="fa fa-link"></i><span class="hidden">link</span></div>
+<div class="col-xs-1"><i class="fa fa-cloud"></i><span class="hidden">cloud</span></div>
+<div class="col-xs-1"><i class="fa fa-flask"></i><span class="hidden"></span></div>
+<div class="col-xs-1"><i class="fa fa-scissors"></i><span class="hidden">flask</span></div>
+<div class="col-xs-1"><i class="fa fa-files-o"></i><span class="hidden">files</span></div>
+<div class="col-xs-1"><i class="fa fa-paperclip"></i><span class="hidden">paperclip</span></div>
+<div class="col-xs-1"><i class="fa fa-floppy-o"></i><span class="hidden">floppy</span></div>
+<div class="col-xs-1"><i class="fa fa-square"></i><span class="hidden">square</span></div>
+<div class="col-xs-1"><i class="fa fa-bars"></i><span class="hidden">bars</span></div>
+<div class="col-xs-1"><i class="fa fa-list-ul"></i><span class="hidden">list ul</span></div>
+<div class="col-xs-1"><i class="fa fa-list-ol"></i><span class="hidden">list ol</span></div>
+<div class="col-xs-1"><i class="fa fa-strikethrough"></i><span class="hidden">strikethrough</span></div>
+<div class="col-xs-1"><i class="fa fa-underline"></i><span class="hidden">underline</span></div>
+<div class="col-xs-1"><i class="fa fa-table"></i><span class="hidden">table</span></div>
+<div class="col-xs-1"><i class="fa fa-magic"></i><span class="hidden">magic</span></div>
+<div class="col-xs-1"><i class="fa fa-truck"></i><span class="hidden">truck</span></div>
+<div class="col-xs-1"><i class="fa fa-pinterest"></i><span class="hidden">pinterest</span></div>
+<div class="col-xs-1"><i class="fa fa-pinterest-square"></i><span class="hidden">pinterest square</span></div>
+<div class="col-xs-1"><i class="fa fa-google-plus-square"></i><span class="hidden">google plus square</span></div>
+<div class="col-xs-1"><i class="fa fa-google-plus"></i><span class="hidden">google plus</span></div>
+<div class="col-xs-1"><i class="fa fa-money"></i><span class="hidden">money</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-down"></i><span class="hidden">caret down</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-up"></i><span class="hidden">caret up</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-left"></i><span class="hidden">caret left</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-right"></i><span class="hidden">caret right</span></div>
+<div class="col-xs-1"><i class="fa fa-columns"></i><span class="hidden">columns</span></div>
+<div class="col-xs-1"><i class="fa fa-sort"></i><span class="hidden">sort</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-desc"></i><span class="hidden">sort desc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-asc"></i><span class="hidden">sort asc</span></div>
+<div class="col-xs-1"><i class="fa fa-envelope"></i><span class="hidden">envelope</span></div>
+<div class="col-xs-1"><i class="fa fa-linkedin"></i><span class="hidden">linkedin</span></div>
+<div class="col-xs-1"><i class="fa fa-undo"></i><span class="hidden">undo</span></div>
+<div class="col-xs-1"><i class="fa fa-gavel"></i><span class="hidden">gavel</span></div>
+<div class="col-xs-1"><i class="fa fa-tachometer"></i><span class="hidden">tachometer</span></div>
+<div class="col-xs-1"><i class="fa fa-comment-o"></i><span class="hidden">comment</span></div>
+<div class="col-xs-1"><i class="fa fa-comments-o"></i><span class="hidden">comments</span></div>
+<div class="col-xs-1"><i class="fa fa-bolt"></i><span class="hidden">bolt</span></div>
+<div class="col-xs-1"><i class="fa fa-sitemap"></i><span class="hidden">sitemap</span></div>
+<div class="col-xs-1"><i class="fa fa-umbrella"></i><span class="hidden">umbrella</span></div>
+<div class="col-xs-1"><i class="fa fa-clipboard"></i><span class="hidden">clipboard</span></div>
+<div class="col-xs-1"><i class="fa fa-lightbulb-o"></i><span class="hidden">lightbulb</span></div>
+<div class="col-xs-1"><i class="fa fa-exchange"></i><span class="hidden">exchange</span></div>
+<div class="col-xs-1"><i class="fa fa-cloud-download"></i><span class="hidden">cloud download</span></div>
+<div class="col-xs-1"><i class="fa fa-cloud-upload"></i><span class="hidden">cloud upload</span></div>
+<div class="col-xs-1"><i class="fa fa-user-md"></i><span class="hidden">user md</span></div>
+<div class="col-xs-1"><i class="fa fa-stethoscope"></i><span class="hidden">stethoscope</span></div>
+<div class="col-xs-1"><i class="fa fa-suitcase"></i><span class="hidden">suitcase</span></div>
+<div class="col-xs-1"><i class="fa fa-bell-o"></i><span class="hidden">bell</span></div>
+<div class="col-xs-1"><i class="fa fa-coffee"></i><span class="hidden">coffee</span></div>
+<div class="col-xs-1"><i class="fa fa-cutlery"></i><span class="hidden">cutlery</span></div>
+<div class="col-xs-1"><i class="fa fa-file-text-o"></i><span class="hidden">file text</span></div>
+<div class="col-xs-1"><i class="fa fa-building-o"></i><span class="hidden">building</span></div>
+<div class="col-xs-1"><i class="fa fa-hospital-o"></i><span class="hidden">hospital</span></div>
+<div class="col-xs-1"><i class="fa fa-ambulance"></i><span class="hidden">ambulance</span></div>
+<div class="col-xs-1"><i class="fa fa-medkit"></i><span class="hidden">medkit</span></div>
+<div class="col-xs-1"><i class="fa fa-fighter-jet"></i><span class="hidden">fighter jet</span></div>
+<div class="col-xs-1"><i class="fa fa-beer"></i><span class="hidden">beer</span></div>
+<div class="col-xs-1"><i class="fa fa-h-square"></i><span class="hidden">square</span></div>
+<div class="col-xs-1"><i class="fa fa-plus-square"></i><span class="hidden">plus square</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-double-left"></i><span class="hidden">angle double left</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-double-right"></i><span class="hidden">angle double right</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-double-up"></i><span class="hidden">angle double up</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-double-down"></i><span class="hidden">angle double down</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-left"></i><span class="hidden">angle left</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-right"></i><span class="hidden">angle right</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-up"></i><span class="hidden">angle up</span></div>
+<div class="col-xs-1"><i class="fa fa-angle-down"></i><span class="hidden">angle down</span></div>
+<div class="col-xs-1"><i class="fa fa-desktop"></i><span class="hidden">desktop</span></div>
+<div class="col-xs-1"><i class="fa fa-laptop"></i><span class="hidden">laptop</span></div>
+<div class="col-xs-1"><i class="fa fa-tablet"></i><span class="hidden">tablet</span></div>
+<div class="col-xs-1"><i class="fa fa-mobile"></i><span class="hidden">mobile</span></div>
+<div class="col-xs-1"><i class="fa fa-circle-o"></i><span class="hidden">circle</span></div>
+<div class="col-xs-1"><i class="fa fa-quote-left"></i><span class="hidden">quote left</span></div>
+<div class="col-xs-1"><i class="fa fa-quote-right"></i><span class="hidden">quote right</span></div>
+<div class="col-xs-1"><i class="fa fa-spinner"></i><span class="hidden">spinner</span></div>
+<div class="col-xs-1"><i class="fa fa-circle"></i><span class="hidden">circle</span></div>
+<div class="col-xs-1"><i class="fa fa-reply"></i><span class="hidden">reply</span></div>
+<div class="col-xs-1"><i class="fa fa-github-alt"></i><span class="hidden">github alt</span></div>
+<div class="col-xs-1"><i class="fa fa-folder-o"></i><span class="hidden">folder</span></div>
+<div class="col-xs-1"><i class="fa fa-folder-open-o"></i><span class="hidden">folder open</span></div>
+<div class="col-xs-1"><i class="fa fa-smile-o"></i><span class="hidden">smile</span></div>
+<div class="col-xs-1"><i class="fa fa-frown-o"></i><span class="hidden">frown</span></div>
+<div class="col-xs-1"><i class="fa fa-meh-o"></i><span class="hidden">meh</span></div>
+<div class="col-xs-1"><i class="fa fa-gamepad"></i><span class="hidden">gamepad</span></div>
+<div class="col-xs-1"><i class="fa fa-keyboard-o"></i><span class="hidden">keyboard</span></div>
+<div class="col-xs-1"><i class="fa fa-flag-o"></i><span class="hidden">flag</span></div>
+<div class="col-xs-1"><i class="fa fa-flag-checkered"></i><span class="hidden">flag checkered</span></div>
+<div class="col-xs-1"><i class="fa fa-terminal"></i><span class="hidden">terminal</span></div>
+<div class="col-xs-1"><i class="fa fa-code"></i><span class="hidden">code</span></div>
+<div class="col-xs-1"><i class="fa fa-reply-all"></i><span class="hidden">reply</span></div>
+<div class="col-xs-1"><i class="fa fa-star-half-o"></i><span class="hidden">star half</span></div>
+<div class="col-xs-1"><i class="fa fa-location-arrow"></i><span class="hidden">location arrow</span></div>
+<div class="col-xs-1"><i class="fa fa-crop"></i><span class="hidden">crop</span></div>
+<div class="col-xs-1"><i class="fa fa-code-fork"></i><span class="hidden">code fork</span></div>
+<div class="col-xs-1"><i class="fa fa-chain-broken"></i><span class="hidden">chain broken</span></div>
+<div class="col-xs-1"><i class="fa fa-question"></i><span class="hidden">question</span></div>
+<div class="col-xs-1"><i class="fa fa-info"></i><span class="hidden">info</span></div>
+<div class="col-xs-1"><i class="fa fa-exclamation"></i><span class="hidden">exclamation</span></div>
+<div class="col-xs-1"><i class="fa fa-superscript"></i><span class="hidden">superscript</span></div>
+<div class="col-xs-1"><i class="fa fa-subscript"></i><span class="hidden">subscript</span></div>
+<div class="col-xs-1"><i class="fa fa-eraser"></i><span class="hidden">eraser</span></div>
+<div class="col-xs-1"><i class="fa fa-puzzle-piece"></i><span class="hidden">puzzle piece</span></div>
+<div class="col-xs-1"><i class="fa fa-microphone"></i><span class="hidden">microphone</span></div>
+<div class="col-xs-1"><i class="fa fa-microphone-slash"></i><span class="hidden">microphone slash</span></div>
+<div class="col-xs-1"><i class="fa fa-shield"></i><span class="hidden">shield</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar-o"></i><span class="hidden">calendar</span></div>
+<div class="col-xs-1"><i class="fa fa-fire-extinguisher"></i><span class="hidden">fire extinguisher</span></div>
+<div class="col-xs-1"><i class="fa fa-rocket"></i><span class="hidden">rocket</span></div>
+<div class="col-xs-1"><i class="fa fa-maxcdn"></i><span class="hidden">maxcdn</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-circle-left"></i><span class="hidden">chevron circle left</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-circle-right"></i><span class="hidden">chevron circle right</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-circle-up"></i><span class="hidden">chevron circle up</span></div>
+<div class="col-xs-1"><i class="fa fa-chevron-circle-down"></i><span class="hidden">chevron circle down</span></div>
+<div class="col-xs-1"><i class="fa fa-html5"></i><span class="hidden">html5</span></div>
+<div class="col-xs-1"><i class="fa fa-css3"></i><span class="hidden">css3</span></div>
+<div class="col-xs-1"><i class="fa fa-anchor"></i><span class="hidden">anchor</span></div>
+<div class="col-xs-1"><i class="fa fa-unlock-alt"></i><span class="hidden">unlock alt</span></div>
+<div class="col-xs-1"><i class="fa fa-bullseye"></i><span class="hidden">bullseye</span></div>
+<div class="col-xs-1"><i class="fa fa-ellipsis-h"></i><span class="hidden">ellipsis</span></div>
+<div class="col-xs-1"><i class="fa fa-ellipsis-v"></i><span class="hidden">ellipsis</span></div>
+<div class="col-xs-1"><i class="fa fa-rss-square"></i><span class="hidden">rss square</span></div>
+<div class="col-xs-1"><i class="fa fa-play-circle"></i><span class="hidden">play circle</span></div>
+<div class="col-xs-1"><i class="fa fa-ticket"></i><span class="hidden">ticket</span></div>
+<div class="col-xs-1"><i class="fa fa-minus-square"></i><span class="hidden">minus square</span></div>
+<div class="col-xs-1"><i class="fa fa-minus-square-o"></i><span class="hidden">minus square</span></div>
+<div class="col-xs-1"><i class="fa fa-level-up"></i><span class="hidden">level up</span></div>
+<div class="col-xs-1"><i class="fa fa-level-down"></i><span class="hidden">level down</span></div>
+<div class="col-xs-1"><i class="fa fa-check-square"></i><span class="hidden">check square</span></div>
+<div class="col-xs-1"><i class="fa fa-pencil-square"></i><span class="hidden">pencil square</span></div>
+<div class="col-xs-1"><i class="fa fa-external-link-square"></i><span class="hidden">external link square</span></div>
+<div class="col-xs-1"><i class="fa fa-share-square"></i><span class="hidden">share square</span></div>
+<div class="col-xs-1"><i class="fa fa-compass"></i><span class="hidden">compass</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-square-o-down"></i><span class="hidden">caret square down</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-square-o-up"></i><span class="hidden">caret square up</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-square-o-right"></i><span class="hidden">caret square right</span></div>
+<div class="col-xs-1"><i class="fa fa-eur"></i><span class="hidden">eur</span></div>
+<div class="col-xs-1"><i class="fa fa-gbp"></i><span class="hidden">gbp</span></div>
+<div class="col-xs-1"><i class="fa fa-usd"></i><span class="hidden">usd</span></div>
+<div class="col-xs-1"><i class="fa fa-inr"></i><span class="hidden">inr</span></div>
+<div class="col-xs-1"><i class="fa fa-jpy"></i><span class="hidden">jpy</span></div>
+<div class="col-xs-1"><i class="fa fa-rub"></i><span class="hidden">rub</span></div>
+<div class="col-xs-1"><i class="fa fa-krw"></i><span class="hidden">krw</span></div>
+<div class="col-xs-1"><i class="fa fa-btc"></i><span class="hidden">btc</span></div>
+<div class="col-xs-1"><i class="fa fa-file"></i><span class="hidden">file</span></div>
+<div class="col-xs-1"><i class="fa fa-file-text"></i><span class="hidden">file text</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-alpha-asc"></i><span class="hidden">sort alpha asc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-alpha-desc"></i><span class="hidden">sort alpha desc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-amount-asc"></i><span class="hidden">sort amount asc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-amount-desc"></i><span class="hidden">sort amount desc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-numeric-asc"></i><span class="hidden">sort numeric asc</span></div>
+<div class="col-xs-1"><i class="fa fa-sort-numeric-desc"></i><span class="hidden">sort numeric desc</span></div>
+<div class="col-xs-1"><i class="fa fa-thumbs-up"></i><span class="hidden">thumbs up</span></div>
+<div class="col-xs-1"><i class="fa fa-thumbs-down"></i><span class="hidden">thumbs down</span></div>
+<div class="col-xs-1"><i class="fa fa-youtube-square"></i><span class="hidden">youtube square</span></div>
+<div class="col-xs-1"><i class="fa fa-youtube"></i><span class="hidden">youtube</span></div>
+<div class="col-xs-1"><i class="fa fa-xing"></i><span class="hidden">xing</span></div>
+<div class="col-xs-1"><i class="fa fa-xing-square"></i><span class="hidden">xing square</span></div>
+<div class="col-xs-1"><i class="fa fa-youtube-play"></i><span class="hidden">youtube play</span></div>
+<div class="col-xs-1"><i class="fa fa-dropbox"></i><span class="hidden">dropbox</span></div>
+<div class="col-xs-1"><i class="fa fa-stack-overflow"></i><span class="hidden">stack overflow</span></div>
+<div class="col-xs-1"><i class="fa fa-instagram"></i><span class="hidden">instagram</span></div>
+<div class="col-xs-1"><i class="fa fa-flickr"></i><span class="hidden">flickr</span></div>
+<div class="col-xs-1"><i class="fa fa-adn"></i><span class="hidden">adn</span></div>
+<div class="col-xs-1"><i class="fa fa-bitbucket"></i><span class="hidden">bitbucket</span></div>
+<div class="col-xs-1"><i class="fa fa-bitbucket-square"></i><span class="hidden">bitbucket square</span></div>
+<div class="col-xs-1"><i class="fa fa-tumblr"></i><span class="hidden">tumblr</span></div>
+<div class="col-xs-1"><i class="fa fa-tumblr-square"></i><span class="hidden">tumblr square</span></div>
+<div class="col-xs-1"><i class="fa fa-long-arrow-down"></i><span class="hidden">long arrow down</span></div>
+<div class="col-xs-1"><i class="fa fa-long-arrow-up"></i><span class="hidden">long arrow up</span></div>
+<div class="col-xs-1"><i class="fa fa-long-arrow-left"></i><span class="hidden">long arrow left</span></div>
+<div class="col-xs-1"><i class="fa fa-long-arrow-right"></i><span class="hidden">long arrow right</span></div>
+<div class="col-xs-1"><i class="fa fa-apple"></i><span class="hidden">apple</span></div>
+<div class="col-xs-1"><i class="fa fa-windows"></i><span class="hidden">windows</span></div>
+<div class="col-xs-1"><i class="fa fa-android"></i><span class="hidden">android</span></div>
+<div class="col-xs-1"><i class="fa fa-linux"></i><span class="hidden">linux</span></div>
+<div class="col-xs-1"><i class="fa fa-dribbble"></i><span class="hidden">dribbble</span></div>
+<div class="col-xs-1"><i class="fa fa-skype"></i><span class="hidden">skype</span></div>
+<div class="col-xs-1"><i class="fa fa-foursquare"></i><span class="hidden">foursquare</span></div>
+<div class="col-xs-1"><i class="fa fa-trello"></i><span class="hidden">trello</span></div>
+<div class="col-xs-1"><i class="fa fa-female"></i><span class="hidden">female</span></div>
+<div class="col-xs-1"><i class="fa fa-male"></i><span class="hidden">male</span></div>
+<div class="col-xs-1"><i class="fa fa-gratipay"></i><span class="hidden">gratipay</span></div>
+<div class="col-xs-1"><i class="fa fa-sun-o"></i><span class="hidden">sun-o</span></div>
+<div class="col-xs-1"><i class="fa fa-moon-o"></i><span class="hidden">moon-o</span></div>
+<div class="col-xs-1"><i class="fa fa-archive"></i><span class="hidden">archive</span></div>
+<div class="col-xs-1"><i class="fa fa-bug"></i><span class="hidden">bug</span></div>
+<div class="col-xs-1"><i class="fa fa-vk"></i><span class="hidden">vk</span></div>
+<div class="col-xs-1"><i class="fa fa-weibo"></i><span class="hidden">weibo</span></div>
+<div class="col-xs-1"><i class="fa fa-renren"></i><span class="hidden">renren</span></div>
+<div class="col-xs-1"><i class="fa fa-pagelines"></i><span class="hidden">pagelines</span></div>
+<div class="col-xs-1"><i class="fa fa-stack-exchange"></i><span class="hidden">stack exchange</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-o-right"></i><span class="hidden">arrow circle right</span></div>
+<div class="col-xs-1"><i class="fa fa-arrow-circle-o-left"></i><span class="hidden">arrow circle left</span></div>
+<div class="col-xs-1"><i class="fa fa-caret-square-o-left"></i><span class="hidden">caret square left</span></div>
+<div class="col-xs-1"><i class="fa fa-dot-circle-o"></i><span class="hidden">dot circle</span></div>
+<div class="col-xs-1"><i class="fa fa-wheelchair"></i><span class="hidden">wheelchair</span></div>
+<div class="col-xs-1"><i class="fa fa-vimeo-square"></i><span class="hidden">vimeo square</span></div>
+<div class="col-xs-1"><i class="fa fa-try"></i><span class="hidden">try</span></div>
+<div class="col-xs-1"><i class="fa fa-plus-square-o"></i><span class="hidden">plus square</span></div>
+<div class="col-xs-1"><i class="fa fa-space-shuttle"></i><span class="hidden">space shuttle</span></div>
+<div class="col-xs-1"><i class="fa fa-slack"></i><span class="hidden">slack</span></div>
+<div class="col-xs-1"><i class="fa fa-envelope-square"></i><span class="hidden">envelope square</span></div>
+<div class="col-xs-1"><i class="fa fa-wordpress"></i><span class="hidden">wordpress</span></div>
+<div class="col-xs-1"><i class="fa fa-openid"></i><span class="hidden">openid</span></div>
+<div class="col-xs-1"><i class="fa fa-university"></i><span class="hidden">university</span></div>
+<div class="col-xs-1"><i class="fa fa-graduation-cap"></i><span class="hidden">graduation cap</span></div>
+<div class="col-xs-1"><i class="fa fa-yahoo"></i><span class="hidden">yahoo</span></div>
+<div class="col-xs-1"><i class="fa fa-google"></i><span class="hidden">google</span></div>
+<div class="col-xs-1"><i class="fa fa-reddit"></i><span class="hidden">reddit</span></div>
+<div class="col-xs-1"><i class="fa fa-reddit-square"></i><span class="hidden">reddit square</span></div>
+<div class="col-xs-1"><i class="fa fa-stumbleupon-circle"></i><span class="hidden">stumbleupon circle</span></div>
+<div class="col-xs-1"><i class="fa fa-stumbleupon"></i><span class="hidden">stumbleupon</span></div>
+<div class="col-xs-1"><i class="fa fa-delicious"></i><span class="hidden">delicious</span></div>
+<div class="col-xs-1"><i class="fa fa-digg"></i><span class="hidden">digg</span></div>
+<div class="col-xs-1"><i class="fa fa-pied-piper"></i><span class="hidden">pied piper</span></div>
+<div class="col-xs-1"><i class="fa fa-pied-piper-alt"></i><span class="hidden">pied piper</span></div>
+<div class="col-xs-1"><i class="fa fa-drupal"></i><span class="hidden">drupal</span></div>
+<div class="col-xs-1"><i class="fa fa-joomla"></i><span class="hidden">joomla</span></div>
+<div class="col-xs-1"><i class="fa fa-language"></i><span class="hidden">language</span></div>
+<div class="col-xs-1"><i class="fa fa-fax"></i><span class="hidden">fax</span></div>
+<div class="col-xs-1"><i class="fa fa-building"></i><span class="hidden">building</span></div>
+<div class="col-xs-1"><i class="fa fa-child"></i><span class="hidden">child</span></div>
+<div class="col-xs-1"><i class="fa fa-paw"></i><span class="hidden">paw</span></div>
+<div class="col-xs-1"><i class="fa fa-spoon"></i><span class="hidden">spoon</span></div>
+<div class="col-xs-1"><i class="fa fa-cube"></i><span class="hidden">cube</span></div>
+<div class="col-xs-1"><i class="fa fa-cubes"></i><span class="hidden">cubes</span></div>
+<div class="col-xs-1"><i class="fa fa-behance"></i><span class="hidden">behance</span></div>
+<div class="col-xs-1"><i class="fa fa-behance-square"></i><span class="hidden">behance square</span></div>
+<div class="col-xs-1"><i class="fa fa-steam"></i><span class="hidden">steam</span></div>
+<div class="col-xs-1"><i class="fa fa-steam-square"></i><span class="hidden">steam square</span></div>
+<div class="col-xs-1"><i class="fa fa-recycle"></i><span class="hidden">recycle</span></div>
+<div class="col-xs-1"><i class="fa fa-car"></i><span class="hidden">car</span></div>
+<div class="col-xs-1"><i class="fa fa-taxi"></i><span class="hidden">taxi</span></div>
+<div class="col-xs-1"><i class="fa fa-tree"></i><span class="hidden">tree</span></div>
+<div class="col-xs-1"><i class="fa fa-spotify"></i><span class="hidden">spotify</span></div>
+<div class="col-xs-1"><i class="fa fa-deviantart"></i><span class="hidden">deviantart</span></div>
+<div class="col-xs-1"><i class="fa fa-soundcloud"></i><span class="hidden">soundcloud</span></div>
+<div class="col-xs-1"><i class="fa fa-database"></i><span class="hidden">database</span></div>
+<div class="col-xs-1"><i class="fa fa-file-pdf-o"></i><span class="hidden">file pdf</span></div>
+<div class="col-xs-1"><i class="fa fa-file-word-o"></i><span class="hidden">file word</span></div>
+<div class="col-xs-1"><i class="fa fa-file-excel-o"></i><span class="hidden">file excel</span></div>
+<div class="col-xs-1"><i class="fa fa-file-powerpoint-o"></i><span class="hidden">file powerpoint</span></div>
+<div class="col-xs-1"><i class="fa fa-file-image-o"></i><span class="hidden">file image</span></div>
+<div class="col-xs-1"><i class="fa fa-file-archive-o"></i><span class="hidden">file archive</span></div>
+<div class="col-xs-1"><i class="fa fa-file-audio-o"></i><span class="hidden">file audio</span></div>
+<div class="col-xs-1"><i class="fa fa-file-video-o"></i><span class="hidden">file video</span></div>
+<div class="col-xs-1"><i class="fa fa-file-code-o"></i><span class="hidden">file code</span></div>
+<div class="col-xs-1"><i class="fa fa-vine"></i><span class="hidden">vine</span></div>
+<div class="col-xs-1"><i class="fa fa-codepen"></i><span class="hidden">codepen</span></div>
+<div class="col-xs-1"><i class="fa fa-jsfiddle"></i><span class="hidden">jsfiddle</span></div>
+<div class="col-xs-1"><i class="fa fa-life-ring"></i><span class="hidden">life ring</span></div>
+<div class="col-xs-1"><i class="fa fa-circle-o-notch"></i><span class="hidden">circle notch</span></div>
+<div class="col-xs-1"><i class="fa fa-rebel"></i><span class="hidden">rebel</span></div>
+<div class="col-xs-1"><i class="fa fa-empire"></i><span class="hidden">empire</span></div>
+<div class="col-xs-1"><i class="fa fa-git-square"></i><span class="hidden">git square</span></div>
+<div class="col-xs-1"><i class="fa fa-git"></i><span class="hidden">git</span></div>
+<div class="col-xs-1"><i class="fa fa-hacker-news"></i><span class="hidden">hacker news</span></div>
+<div class="col-xs-1"><i class="fa fa-tencent-weibo"></i><span class="hidden">tencent weibo</span></div>
+<div class="col-xs-1"><i class="fa fa-qq"></i><span class="hidden">qq</span></div>
+<div class="col-xs-1"><i class="fa fa-weixin"></i><span class="hidden">weixin</span></div>
+<div class="col-xs-1"><i class="fa fa-paper-plane"></i><span class="hidden">paper plane</span></div>
+<div class="col-xs-1"><i class="fa fa-paper-plane-o"></i><span class="hidden">paper plane</span></div>
+<div class="col-xs-1"><i class="fa fa-history"></i><span class="hidden">history</span></div>
+<div class="col-xs-1"><i class="fa fa-circle-thin"></i><span class="hidden">circle thin</span></div>
+<div class="col-xs-1"><i class="fa fa-header"></i><span class="hidden">header</span></div>
+<div class="col-xs-1"><i class="fa fa-paragraph"></i><span class="hidden">paragraph</span></div>
+<div class="col-xs-1"><i class="fa fa-sliders"></i><span class="hidden">sliders</span></div>
+<div class="col-xs-1"><i class="fa fa-share-alt"></i><span class="hidden">share alt</span></div>
+<div class="col-xs-1"><i class="fa fa-share-alt-square"></i><span class="hidden">share alt square</span></div>
+<div class="col-xs-1"><i class="fa fa-bomb"></i><span class="hidden">bomb</span></div>
+<div class="col-xs-1"><i class="fa fa-futbol-o"></i><span class="hidden">futbol</span></div>
+<div class="col-xs-1"><i class="fa fa-tty"></i><span class="hidden">tty</span></div>
+<div class="col-xs-1"><i class="fa fa-binoculars"></i><span class="hidden">binoculars</span></div>
+<div class="col-xs-1"><i class="fa fa-plug"></i><span class="hidden">plug</span></div>
+<div class="col-xs-1"><i class="fa fa-slideshare"></i><span class="hidden">slideshare</span></div>
+<div class="col-xs-1"><i class="fa fa-twitch"></i><span class="hidden">twitch</span></div>
+<div class="col-xs-1"><i class="fa fa-yelp"></i><span class="hidden">yelp</span></div>
+<div class="col-xs-1"><i class="fa fa-newspaper-o"></i><span class="hidden">newspaper</span></div>
+<div class="col-xs-1"><i class="fa fa-wifi"></i><span class="hidden">wifi</span></div>
+<div class="col-xs-1"><i class="fa fa-calculator"></i><span class="hidden">calculator</span></div>
+<div class="col-xs-1"><i class="fa fa-paypal"></i><span class="hidden">paypal</span></div>
+<div class="col-xs-1"><i class="fa fa-google-wallet"></i><span class="hidden">google wallet</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-visa"></i><span class="hidden">cc visa</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-mastercard"></i><span class="hidden">cc mastercard</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-discover"></i><span class="hidden">cc discover</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-amex"></i><span class="hidden">cc amex</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-paypal"></i><span class="hidden">cc paypal</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-stripe"></i><span class="hidden">cc stripe</span></div>
+<div class="col-xs-1"><i class="fa fa-bell-slash"></i><span class="hidden">bell slash</span></div>
+<div class="col-xs-1"><i class="fa fa-bell-slash-o"></i><span class="hidden">bell slash</span></div>
+<div class="col-xs-1"><i class="fa fa-trash"></i><span class="hidden">trash</span></div>
+<div class="col-xs-1"><i class="fa fa-copyright"></i><span class="hidden">copyright</span></div>
+<div class="col-xs-1"><i class="fa fa-at"></i><span class="hidden">at</span></div>
+<div class="col-xs-1"><i class="fa fa-eyedropper"></i><span class="hidden">eyedropper</span></div>
+<div class="col-xs-1"><i class="fa fa-paint-brush"></i><span class="hidden">paint brush</span></div>
+<div class="col-xs-1"><i class="fa fa-birthday-cake"></i><span class="hidden">birthday cake</span></div>
+<div class="col-xs-1"><i class="fa fa-area-chart"></i><span class="hidden">area chart</span></div>
+<div class="col-xs-1"><i class="fa fa-pie-chart"></i><span class="hidden">pie chart</span></div>
+<div class="col-xs-1"><i class="fa fa-line-chart"></i><span class="hidden">line chart</span></div>
+<div class="col-xs-1"><i class="fa fa-lastfm"></i><span class="hidden">lastfm</span></div>
+<div class="col-xs-1"><i class="fa fa-lastfm-square"></i><span class="hidden">lastfm square</span></div>
+<div class="col-xs-1"><i class="fa fa-toggle-off"></i><span class="hidden">toggle off</span></div>
+<div class="col-xs-1"><i class="fa fa-toggle-on"></i><span class="hidden">toggle on</span></div>
+<div class="col-xs-1"><i class="fa fa-bicycle"></i><span class="hidden">bicycle</span></div>
+<div class="col-xs-1"><i class="fa fa-bus"></i><span class="hidden">bus</span></div>
+<div class="col-xs-1"><i class="fa fa-ioxhost"></i><span class="hidden">ioxhost</span></div>
+<div class="col-xs-1"><i class="fa fa-angellist"></i><span class="hidden">angellist</span></div>
+<div class="col-xs-1"><i class="fa fa-cc"></i><span class="hidden">cc</span></div>
+<div class="col-xs-1"><i class="fa fa-ils"></i><span class="hidden">ils</span></div>
+<div class="col-xs-1"><i class="fa fa-meanpath"></i><span class="hidden">meanpath</span></div>
+<div class="col-xs-1"><i class="fa fa-buysellads"></i><span class="hidden">buysellads</span></div>
+<div class="col-xs-1"><i class="fa fa-connectdevelop"></i><span class="hidden">connectdevelop</span></div>
+<div class="col-xs-1"><i class="fa fa-dashcube"></i><span class="hidden">dashcube</span></div>
+<div class="col-xs-1"><i class="fa fa-forumbee"></i><span class="hidden">forumbee</span></div>
+<div class="col-xs-1"><i class="fa fa-leanpub"></i><span class="hidden">leanpub</span></div>
+<div class="col-xs-1"><i class="fa fa-sellsy"></i><span class="hidden">sellsy</span></div>
+<div class="col-xs-1"><i class="fa fa-shirtsinbulk"></i><span class="hidden">shirtsinbulk</span></div>
+<div class="col-xs-1"><i class="fa fa-simplybuilt"></i><span class="hidden">simplybuilt</span></div>
+<div class="col-xs-1"><i class="fa fa-skyatlas"></i><span class="hidden">skyatlas</span></div>
+<div class="col-xs-1"><i class="fa fa-cart-plus"></i><span class="hidden">cart plus</span></div>
+<div class="col-xs-1"><i class="fa fa-cart-arrow-down"></i><span class="hidden">cart arrow down</span></div>
+<div class="col-xs-1"><i class="fa fa-diamond"></i><span class="hidden">diamond</span></div>
+<div class="col-xs-1"><i class="fa fa-ship"></i><span class="hidden">ship</span></div>
+<div class="col-xs-1"><i class="fa fa-user-secret"></i><span class="hidden">user secret</span></div>
+<div class="col-xs-1"><i class="fa fa-motorcycle"></i><span class="hidden">motorcycle</span></div>
+<div class="col-xs-1"><i class="fa fa-street-view"></i><span class="hidden">street view</span></div>
+<div class="col-xs-1"><i class="fa fa-heartbeat"></i><span class="hidden">heartbeat</span></div>
+<div class="col-xs-1"><i class="fa fa-venus"></i><span class="hidden">venus</span></div>
+<div class="col-xs-1"><i class="fa fa-mars"></i><span class="hidden">mars</span></div>
+<div class="col-xs-1"><i class="fa fa-mercury"></i><span class="hidden">mercury</span></div>
+<div class="col-xs-1"><i class="fa fa-transgender"></i><span class="hidden">transgender</span></div>
+<div class="col-xs-1"><i class="fa fa-transgender-alt"></i><span class="hidden">transgender alt</span></div>
+<div class="col-xs-1"><i class="fa fa-venus-double"></i><span class="hidden">venus double</span></div>
+<div class="col-xs-1"><i class="fa fa-mars-double"></i><span class="hidden">mars double</span></div>
+<div class="col-xs-1"><i class="fa fa-venus-mars"></i><span class="hidden">venus mars</span></div>
+<div class="col-xs-1"><i class="fa fa-mars-stroke"></i><span class="hidden">mars stroke</span></div>
+<div class="col-xs-1"><i class="fa fa-mars-stroke-v"></i><span class="hidden">mars stroke</span></div>
+<div class="col-xs-1"><i class="fa fa-mars-stroke-h"></i><span class="hidden">mars stroke</span></div>
+<div class="col-xs-1"><i class="fa fa-neuter"></i><span class="hidden">neuter</span></div>
+<div class="col-xs-1"><i class="fa fa-genderless"></i><span class="hidden">genderless</span></div>
+<div class="col-xs-1"><i class="fa fa-facebook-official"></i><span class="hidden">facebook</span></div>
+<div class="col-xs-1"><i class="fa fa-pinterest-p"></i><span class="hidden">pinterest</span></div>
+<div class="col-xs-1"><i class="fa fa-whatsapp"></i><span class="hidden">whatsapp</span></div>
+<div class="col-xs-1"><i class="fa fa-server"></i><span class="hidden">server</span></div>
+<div class="col-xs-1"><i class="fa fa-user-plus"></i><span class="hidden">user plus</span></div>
+<div class="col-xs-1"><i class="fa fa-user-times"></i><span class="hidden">user times</span></div>
+<div class="col-xs-1"><i class="fa fa-bed"></i><span class="hidden">bed</span></div>
+<div class="col-xs-1"><i class="fa fa-viacoin"></i><span class="hidden">viacoin</span></div>
+<div class="col-xs-1"><i class="fa fa-train"></i><span class="hidden">train</span></div>
+<div class="col-xs-1"><i class="fa fa-subway"></i><span class="hidden">subway</span></div>
+<div class="col-xs-1"><i class="fa fa-medium"></i><span class="hidden">medium</span></div>
+<div class="col-xs-1"><i class="fa fa-y-combinator"></i><span class="hidden">combinator</span></div>
+<div class="col-xs-1"><i class="fa fa-optin-monster"></i><span class="hidden">optin monster</span></div>
+<div class="col-xs-1"><i class="fa fa-opencart"></i><span class="hidden">opencart</span></div>
+<div class="col-xs-1"><i class="fa fa-expeditedssl"></i><span class="hidden">expeditedssl</span></div>
+<div class="col-xs-1"><i class="fa fa-battery-full"></i><span class="hidden">battery full</span></div>
+<div class="col-xs-1"><i class="fa fa-battery-three-quarters"></i><span class="hidden">battery three quarters</span></div>
+<div class="col-xs-1"><i class="fa fa-battery-half"></i><span class="hidden">battery half</span></div>
+<div class="col-xs-1"><i class="fa fa-battery-quarter"></i><span class="hidden">battery quarter</span></div>
+<div class="col-xs-1"><i class="fa fa-battery-empty"></i><span class="hidden">battery empty</span></div>
+<div class="col-xs-1"><i class="fa fa-mouse-pointer"></i><span class="hidden">mouse pointer</span></div>
+<div class="col-xs-1"><i class="fa fa-i-cursor"></i><span class="hidden">cursor</span></div>
+<div class="col-xs-1"><i class="fa fa-object-group"></i><span class="hidden">object group</span></div>
+<div class="col-xs-1"><i class="fa fa-object-ungroup"></i><span class="hidden">object ungroup</span></div>
+<div class="col-xs-1"><i class="fa fa-sticky-note"></i><span class="hidden">sticky note</span></div>
+<div class="col-xs-1"><i class="fa fa-sticky-note-o"></i><span class="hidden">sticky note</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-jcb"></i><span class="hidden">cc jcb</span></div>
+<div class="col-xs-1"><i class="fa fa-cc-diners-club"></i><span class="hidden">cc diners club</span></div>
+<div class="col-xs-1"><i class="fa fa-clone"></i><span class="hidden">clone</span></div>
+<div class="col-xs-1"><i class="fa fa-balance-scale"></i><span class="hidden">balance scale</span></div>
+<div class="col-xs-1"><i class="fa fa-hourglass-o"></i><span class="hidden">hourglass</span></div>
+<div class="col-xs-1"><i class="fa fa-hourglass-start"></i><span class="hidden">hourglass start</span></div>
+<div class="col-xs-1"><i class="fa fa-hourglass-half"></i><span class="hidden">hourglass half</span></div>
+<div class="col-xs-1"><i class="fa fa-hourglass-end"></i><span class="hidden">hourglass end</span></div>
+<div class="col-xs-1"><i class="fa fa-hourglass"></i><span class="hidden">hourglass</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-rock-o"></i><span class="hidden">hand rock</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-paper-o"></i><span class="hidden">hand paper</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-scissors-o"></i><span class="hidden">hand scissors</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-lizard-o"></i><span class="hidden">hand lizard</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-spock-o"></i><span class="hidden">hand spock</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-pointer-o"></i><span class="hidden">hand pointer</span></div>
+<div class="col-xs-1"><i class="fa fa-hand-peace-o"></i><span class="hidden">hand peace</span></div>
+<div class="col-xs-1"><i class="fa fa-trademark"></i><span class="hidden">trademark</span></div>
+<div class="col-xs-1"><i class="fa fa-registered"></i><span class="hidden">registered</span></div>
+<div class="col-xs-1"><i class="fa fa-creative-commons"></i><span class="hidden">creative commons</span></div>
+<div class="col-xs-1"><i class="fa fa-gg"></i><span class="hidden">gg</span></div>
+<div class="col-xs-1"><i class="fa fa-gg-circle"></i><span class="hidden">gg circle</span></div>
+<div class="col-xs-1"><i class="fa fa-tripadvisor"></i><span class="hidden">tripadvisor</span></div>
+<div class="col-xs-1"><i class="fa fa-odnoklassniki"></i><span class="hidden">odnoklassniki</span></div>
+<div class="col-xs-1"><i class="fa fa-odnoklassniki-square"></i><span class="hidden">odnoklassniki square</span></div>
+<div class="col-xs-1"><i class="fa fa-get-pocket"></i><span class="hidden">get pocket</span></div>
+<div class="col-xs-1"><i class="fa fa-wikipedia-w"></i><span class="hidden">wikipedia</span></div>
+<div class="col-xs-1"><i class="fa fa-safari"></i><span class="hidden">safari</span></div>
+<div class="col-xs-1"><i class="fa fa-chrome"></i><span class="hidden">chrome</span></div>
+<div class="col-xs-1"><i class="fa fa-firefox"></i><span class="hidden">firefox</span></div>
+<div class="col-xs-1"><i class="fa fa-opera"></i><span class="hidden">opera</span></div>
+<div class="col-xs-1"><i class="fa fa-internet-explorer"></i><span class="hidden">internet explorer ie</span></div>
+<div class="col-xs-1"><i class="fa fa-television"></i><span class="hidden">television</span></div>
+<div class="col-xs-1"><i class="fa fa-contao"></i><span class="hidden">contao</span></div>
+<div class="col-xs-1"><i class="fa fa-500px"></i><span class="hidden">500 px</span></div>
+<div class="col-xs-1"><i class="fa fa-amazon"></i><span class="hidden">amazon</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar-plus-o"></i><span class="hidden">calendar plus</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar-minus-o"></i><span class="hidden">calendar minus</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar-times-o"></i><span class="hidden">calendar times</span></div>
+<div class="col-xs-1"><i class="fa fa-calendar-check-o"></i><span class="hidden">calendar check</span></div>
+<div class="col-xs-1"><i class="fa fa-industry"></i><span class="hidden">industry</span></div>
+<div class="col-xs-1"><i class="fa fa-map-pin"></i><span class="hidden">map pin</span></div>
+<div class="col-xs-1"><i class="fa fa-map-signs"></i><span class="hidden">map signs</span></div>
+<div class="col-xs-1"><i class="fa fa-map-o"></i><span class="hidden">map</span></div>
+<div class="col-xs-1"><i class="fa fa-map"></i><span class="hidden">map</span></div>
+<div class="col-xs-1"><i class="fa fa-commenting"></i><span class="hidden">commenting</span></div>
+<div class="col-xs-1"><i class="fa fa-commenting-o"></i><span class="hidden">commenting</span></div>
+<div class="col-xs-1"><i class="fa fa-houzz"></i><span class="hidden">houzz</span></div>
+<div class="col-xs-1"><i class="fa fa-vimeo"></i><span class="hidden">vimeo</span></div>
+<div class="col-xs-1"><i class="fa fa-black-tie"></i><span class="hidden">black tie</span></div>
+<div class="col-xs-1"><i class="fa fa-fonticons"></i><span class="hidden">fonticons</span></div></div>
+        </div>
+<script>
+    $('.js-toggle').on('change', 'input[type=radio]', function (e) {
+        var el = this;
+
+        $(el).closest('.js-toggle').find('.js-toggle-target').hide();
+        if ($(el).is(':checked')) {
+            $(el).closest('.radio').find('.js-toggle-target').slideDown('fast');
+        }
+    });
+    setTimeout(function() {
+        $('.js-toggle').trigger('change');
+    }, 100);
+</script>
+<script>
+$(document).ready(function(){
+  $("#iconsFilter").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#faIcons div").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+{{ footer }}

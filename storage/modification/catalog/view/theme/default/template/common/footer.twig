@@ -1,0 +1,82 @@
+<footer>
+  <div class="container">
+    <div class="row">
+      {% if informations %}
+      <div class="col-sm-3">
+        <h5>{{ text_information }}</h5>
+        <ul class="list-unstyled">
+         {% for information in informations %}
+          <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <div class="col-sm-3">
+        <h5>{{ text_service }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ contact }}">{{ text_contact }}</a></li>
+          <li><a href="{{ return }}">{{ text_return }}</a></li>
+          <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_extra }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
+          <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
+          <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
+          <li><a href="{{ special }}">{{ text_special }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_account }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ account }}">{{ text_account }}</a></li>
+          <li><a href="{{ order }}">{{ text_order }}</a></li>
+          <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
+          <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+    <p>{{ powered }}</p>
+  </div>
+</footer>
+
+		    {% if set_agree_cooki %}
+	        {{ set_agree_cooki }} 
+	        {% endif %}
+	    
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+<!--
+OpenCart is open source software and you are free to remove the powered by OpenCart if you want, but its generally accepted practise to make a small donation.
+Please donate via PayPal to donate@opencart.com
+//-->
+
+{% if module_cookiepolicy_status == "1" %}
+<script type="text/javascript" >
+    var text_before = "{{ module_cookiepolicy_cookietext.text[langcode] }}";
+    var link_text = "{% if module_cookiepolicy_infopage_on == 1 %} {{ module_cookiepolicy_infopage_title }} {% elseif module_cookiepolicy_infopage_on == 0 %} {{ module_cookiepolicy_urltext.text[langcode] }}{% endif %}";
+    var text_after = "{{ module_cookiepolicy_cookietext_after.text[langcode] }}";
+    var accept_text = "{{ module_cookiepolicy_buttontext.text[langcode] }}";
+    var cookie_url = "{% if module_cookiepolicy_infopage_on == 1 %} {{ module_cookiepolicy_infopage_url }} {% elseif module_cookiepolicy_infopage_on == 0 %} {{ module_cookiepolicy_url }}{% endif %}";
+    var target_url = "{{ cookiepolicy_blank_page }}";
+    var cookie_expires = {{ module_cookiepolicy_cookie_expires }};
+    var cookie_name = "{{ module_cookiepolicy_cookie_name }}";
+    var text_align = "{{ module_cookiepolicy_text_align }}";
+    var cookie_position = "{{ module_cookiepolicy_position }}";
+    var button_icon = "{% if module_cookiepolicy_accept_button_icon %}<i class='{{ module_cookiepolicy_accept_button_icon }}'></i>&nbsp;{% endif %}";
+</script>
+<script src="catalog/view/javascript/cookiepolicy/jquery.cookie.js"></script>
+<script src="catalog/view/javascript/cookiepolicy/jquery.cookiecuttr.js"></script>
+<link rel="stylesheet" href="catalog/view/javascript/cookiepolicy/cookiepolicy.css">
+<script>
+$(document).ready(function () {
+    $.cookieCuttr();	
+});
+</script>
+{% endif %}
+			
+</body></html>
